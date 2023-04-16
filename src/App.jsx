@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 function App() {
-
+  console.log('test githubu')
   return (
     <div className='w-screen h-screen flex flex-col'>
       <div className='flex m-6'>
