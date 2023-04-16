@@ -1,16 +1,15 @@
-import { useState } from 'react'
+import { signInWithGoogle } from "./firebase"
+import {initializeApp} from "firebase/app"
 
 function App() {
-  console.log('test githubu')
+
+  const googleSingIn = () => {
+    signInWithGoogle().then(res=>console.log(res))
+  }
+
   return (
-    <div className='w-screen h-screen flex flex-col'>
-      <div className='flex m-6'>
-        <h1 className='text-3xl'>Homba za pokladem DEPLOY TEST</h1>
-      </div>
-
-      <div className='flex-1 bg-red-500 flex'>
-
-      </div>
+    <div className='w-screen h-screen flex bg-red-300'>
+      <div className='text-4xl m-auto border-blue-400 border-4 px-2 py-1 rounded-3xl cursor-pointer' onClick={()=>googleSingIn()}>GOOGLE LOGIN</div>
     </div>
   )
 }
