@@ -1,20 +1,48 @@
-import { useReducer } from "react";
-import { signInWithGoogle } from "./Auth";
-import { RouterProvider } from "react-router-dom";
+import { useEffect, useReducer } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { initial, reducer } from "./store";
-import { router } from "./router/pages";
-
+import Login from "./router/Login";
+import Administration from "./router/Administration";
+import Player from "./router/Player";
+import NotFound from "./router/NotFound";
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initial)
+  const [state, dispatch] = useReducer(reducer, initial);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const login = localStorage.getItem("login");
+    if (login === "ADMIN") {
+      dispatch({ type: "set-admin" });
+    } else if (login === "PLAYER") {
+      dispatch({ type: "set-player" });
+    }
+  }, []);
 
-  const handleLogin = () => {
-    signInWithGoogle();
-  };
+  useEffect(() => {
+    if (state.login) {
+      localStorage.setItem("login", state.login);
+      if (state.login === "ADMIN") {
+        navigate("/admin");
+      } else if (state.login === "PLAYER") {
+        navigate("/player");
+      }
+    } else {
+      navigate("/");
+    }
+  }, [state.login, navigate]);
 
   return (
     <div className="w-screen h-screen flex flex-1">
-      <RouterProvider router={router} />
+      <Routes>
+        <Route path="/" element={<Login dispatch={dispatch} />} />
+        {state.login === "ADMIN" && (
+          <Route path="/admin" element={<Administration />} />
+        )}
+        {state.login === "PLAYER" && (
+          <Route path="/player" element={<Player />} />
+        )}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   );
 }
