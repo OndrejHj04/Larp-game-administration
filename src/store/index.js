@@ -2,6 +2,7 @@ export const initial = {
   login: false,
   loading: true,
   inventory: [],
+  slider: 1,
 };
 
 export const reducer = (state, actions) => {
@@ -11,7 +12,9 @@ export const reducer = (state, actions) => {
     case "set-player":
       return { ...state, login: "PLAYER" };
     case "set-inventory":
-      return {...state, inventory: actions.data, loading: false}
+      return { ...state, inventory: actions.data, loading: false };
+    case "set-slider":
+      return { ...state, slider: actions.value };
     default:
       return { ...state };
   }

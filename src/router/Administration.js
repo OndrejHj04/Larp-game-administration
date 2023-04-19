@@ -1,4 +1,10 @@
-import { Button, CircularProgress, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Paper,
+  Slider,
+  Typography,
+} from "@mui/material";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import { db } from "../Auth";
@@ -13,15 +19,19 @@ export default function Administration({ state, dispatch }) {
 
   const handleIncrement = ({ id, name, count }) => {
     updateDoc(doc(db, "inventory", name), {
-      count: count + 1,
+      count: count + state.slider,
     });
   };
 
   const handleDecrement = ({ id, name, count }) => {
     updateDoc(doc(db, "inventory", name), {
-      count: count - 1,
+      count: count - state.slider,
     });
   };
+
+  const handleSlider = (e) => {
+    dispatch({type: "set-slider", value: e.target.value})
+  }
 
   return (
     <div className="flex-1 flex">
@@ -65,8 +75,17 @@ export default function Administration({ state, dispatch }) {
             ))}
           </>
         )}
-        <div>
-          data
+        <div className="mt-5">
+          <Typography variant="h6" className="text-center">Aktuální počet přidání nebo odebrání: {state.slider}</Typography>
+          <Slider
+            aria-label="Small steps"
+            onChange={handleSlider}
+            defaultValue={1}
+            step={1}
+            min={1}
+            max={10}
+            valueLabelDisplay="auto"
+          />
         </div>
       </Paper>
     </div>
