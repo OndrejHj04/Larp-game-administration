@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { initial, reducer } from "./store";
 import Login from "./router/Login";
-import Administration from "./router/Administration";
+import Administration from "./router/administration/Administration";
 import Player from "./router/Player";
 import NotFound from "./router/NotFound";
 
