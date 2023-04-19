@@ -39,7 +39,7 @@ function App() {
           <Route path="/admin" element={<Administration state={state} dispatch={dispatch}/>} />
         )}
         {state.login === "PLAYER" && (
-          <Route path="/player" element={<Player />} />
+          <Route path="/player" element={<Player state={state} dispatch={dispatch}/>} />
         )}
         <Route path="*" element={<NotFound />} />
       </Routes>
