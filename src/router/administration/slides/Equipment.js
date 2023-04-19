@@ -18,6 +18,12 @@ export default function Equipment({ state, dispatch }) {
       item.forEach((doc) => data.push(doc.data()));
       dispatch({ type: "set-equipment", data });
     });
+
+    onSnapshot(collection(db, "oxygen-masks"), (item) => {
+      let data = [];
+      item.forEach((doc) => data.push(doc.data()));
+      dispatch({ type: "set-masks", data });
+    });
   }, []);
 
   const handleIncrement = ({ id, name, count }) => {
@@ -47,6 +53,26 @@ export default function Equipment({ state, dispatch }) {
     dispatch({ type: "set-slider", value: e.target.value });
   };
 
+  const incrementMasks = ({ id, name, level }) => {
+    state.masks.forEach(({ name }) => {
+      if (level < 3) {
+        updateDoc(doc(db, "oxygen-masks", name), {
+          level: level + 1,
+        });
+      }
+    });
+  };
+
+  const decrementMasks = ({ id, name, level }) => {
+    state.masks.forEach(({ name }) => {
+      if (level > 1) {
+        updateDoc(doc(db, "oxygen-masks", name), {
+          level: level - 1,
+        });
+      }
+    });
+  };
+
   return (
     <>
       <Paper className="m-auto p-4 flex flex-col">
@@ -59,6 +85,34 @@ export default function Equipment({ state, dispatch }) {
           </div>
         ) : (
           <>
+            {state.masks.map(({ id, name, level }) => (
+              <div className="flex items-center mb-1 mt-1" key={id}>
+                <div className="mr-auto">
+                  <Typography variant="h6">{name}</Typography>
+                </div>
+                <div className="ml-4">
+                  <Typography>ÚROVEŇ: {level}</Typography>
+                </div>
+                <div className="ml-4">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => incrementMasks({ id, name, level })}
+                  >
+                    <Typography>PŘIDAT</Typography>
+                  </Button>
+                </div>
+                <div className="ml-4">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => decrementMasks({ id, name, level })}
+                  >
+                    <Typography>ODEBRAT</Typography>
+                  </Button>
+                </div>
+              </div>
+            ))}
             {state.equipment.map(({ id, name, count }) => (
               <div className="flex items-center mb-1 mt-1" key={id}>
                 <div className="mr-auto">

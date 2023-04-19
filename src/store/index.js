@@ -3,9 +3,10 @@ export const initial = {
   loading: true,
   inventory: [],
   equipment: [],
+  masks: [],
   slider: 1,
   modal: false,
-  slides: 1
+  slides: 2,
 };
 
 export const reducer = (state, actions) => {
@@ -21,9 +22,11 @@ export const reducer = (state, actions) => {
     case "set-modal":
       return { ...state, modal: !state.modal };
     case "set-slides":
-      return {...state, slides: actions.value, loading: true}
+      return { ...state, slides: actions.value, loading: true };
     case "set-equipment":
-      return {...state, equipment: actions.data, loading: false}
+      return { ...state, equipment: actions.data, loading: false };
+    case "set-masks":
+      return { ...state, masks: actions.data, loading: false };
     default:
       return { ...state };
   }
