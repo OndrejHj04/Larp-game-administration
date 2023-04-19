@@ -7,10 +7,19 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../../Auth";
+import { useEffect } from "react";
 
 export default function Inventory({ state, dispatch }) {
+  useEffect(() => {
+    onSnapshot(collection(db, "inventory"), (item) => {
+      let data = [];
+      item.forEach((doc) => data.push(doc.data()));
+      dispatch({ type: "set-inventory", data });
+    });
+  }, []);
+
   const handleIncrement = ({ id, name, count }) => {
     updateDoc(doc(db, "inventory", name), {
       count: count + state.slider,
