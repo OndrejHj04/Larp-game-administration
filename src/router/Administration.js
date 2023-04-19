@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Paper, Typography } from "@mui/material";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import { db } from "../Auth";
 export default function Administration({ state, dispatch }) {
@@ -12,11 +12,15 @@ export default function Administration({ state, dispatch }) {
   }, []);
 
   const handleIncrement = ({ id, name, count }) => {
-
+    updateDoc(doc(db, "inventory", name), {
+      count: count + 1,
+    });
   };
 
   const handleDecrement = ({ id, name, count }) => {
-
+    updateDoc(doc(db, "inventory", name), {
+      count: count - 1,
+    });
   };
 
   return (
@@ -61,6 +65,9 @@ export default function Administration({ state, dispatch }) {
             ))}
           </>
         )}
+        <div>
+          data
+        </div>
       </Paper>
     </div>
   );
