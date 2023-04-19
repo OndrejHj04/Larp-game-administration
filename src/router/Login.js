@@ -2,13 +2,9 @@ import { Button, Typography } from "@mui/material";
 import { signInWithGoogle } from "../Auth";
 
 export default function Login({ dispatch }) {
-
   const handleLogin = () => {
     signInWithGoogle().then((res) => {
-      if (
-        res.user.email === "hajekkubik@gmail.com" ||
-        res.user.email === "ondrej.hajek.profi@gmail.com"
-      ) {
+      if (true) {
         dispatch({ type: "set-admin" });
       } else {
         dispatch({ type: "set-player" });

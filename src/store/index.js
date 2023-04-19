@@ -4,6 +4,7 @@ export const initial = {
   inventory: [],
   slider: 1,
   modal: false,
+  slides: 1
 };
 
 export const reducer = (state, actions) => {
@@ -18,6 +19,8 @@ export const reducer = (state, actions) => {
       return { ...state, slider: actions.value };
     case "set-modal":
       return { ...state, modal: !state.modal };
+    case "set-slides":
+      return {...state, slides: actions.value}
     default:
       return { ...state };
   }
