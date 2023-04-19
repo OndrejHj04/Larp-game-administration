@@ -3,6 +3,7 @@ export const initial = {
   loading: true,
   inventory: [],
   slider: 1,
+  modal: false,
 };
 
 export const reducer = (state, actions) => {
@@ -15,6 +16,8 @@ export const reducer = (state, actions) => {
       return { ...state, inventory: actions.data, loading: false };
     case "set-slider":
       return { ...state, slider: actions.value };
+    case "set-modal":
+      return { ...state, modal: !state.modal };
     default:
       return { ...state };
   }

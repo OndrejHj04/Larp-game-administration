@@ -1,6 +1,8 @@
 import {
+  Box,
   Button,
   CircularProgress,
+  Modal,
   Paper,
   Slider,
   Typography,
@@ -8,6 +10,7 @@ import {
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import { db } from "../Auth";
+
 export default function Administration({ state, dispatch }) {
   useEffect(() => {
     onSnapshot(collection(db, "inventory"), (item) => {
@@ -24,14 +27,25 @@ export default function Administration({ state, dispatch }) {
   };
 
   const handleDecrement = ({ id, name, count }) => {
-    updateDoc(doc(db, "inventory", name), {
-      count: count - state.slider,
-    });
+    if (count > 0) {
+      updateDoc(doc(db, "inventory", name), {
+        count: count - state.slider,
+      });
+    }
   };
 
   const handleSlider = (e) => {
-    dispatch({type: "set-slider", value: e.target.value})
-  }
+    dispatch({ type: "set-slider", value: e.target.value });
+  };
+
+  const handleResetCount = () => {
+    state.inventory.forEach(({ name }) => {
+      updateDoc(doc(db, "inventory", name), {
+        count: 0,
+      });
+    });
+    dispatch({ type: "set-modal" });
+  };
 
   return (
     <div className="flex-1 flex">
@@ -76,7 +90,9 @@ export default function Administration({ state, dispatch }) {
           </>
         )}
         <div className="mt-5">
-          <Typography variant="h6" className="text-center">Aktuální počet přidání nebo odebrání: {state.slider}</Typography>
+          <Typography variant="h6" className="text-center">
+            Aktuální počet přidání nebo odebrání: {state.slider}
+          </Typography>
           <Slider
             aria-label="Small steps"
             onChange={handleSlider}
@@ -87,7 +103,42 @@ export default function Administration({ state, dispatch }) {
             valueLabelDisplay="auto"
           />
         </div>
+        <div className="mt-3 flex justify-center">
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={() => dispatch({ type: "set-modal" })}
+          >
+            <Typography>RESET ALL</Typography>
+          </Button>
+        </div>
       </Paper>
+      <Modal
+        open={state.modal}
+        onClose={() => dispatch({ type: "set-modal" })}
+        className="flex-1 flex"
+      >
+        <Box className="m-auto bg-white p-3 rounded-2xl">
+          <Typography variant="h6" color="red">
+            SMAZAT INVENTÁŘ!
+          </Typography>
+          <Typography>
+            Opravdu chcete nastavit u všech předmětů v inventáři počet na 0?
+            Tato akce bude nevratná.
+          </Typography>
+          <div className="mt-3">
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={handleResetCount}
+            >
+              <Typography>RESTARTOVAT</Typography>
+            </Button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 }
