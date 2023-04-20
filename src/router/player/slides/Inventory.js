@@ -1,19 +1,18 @@
-import { Button, CircularProgress, Paper, Typography } from "@mui/material";
-import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "../Auth";
+import { CircularProgress, Paper, Typography } from "@mui/material";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
 
-export default function Player({ state, dispatch }) {
-  useEffect(() => {
-    onSnapshot(collection(db, "inventory"), (item) => {
-      let data = [];
-      item.forEach((doc) => data.push(doc.data()));
-      dispatch({ type: "set-inventory", data });
-    });
-  }, []);
+export default function Inventory({ state, dispatch, db }) {
+    useEffect(() => {
+        onSnapshot(collection(db, "inventory"), (item) => {
+          let data = [];
+          item.forEach((doc) => data.push(doc.data()));
+          dispatch({ type: "set-inventory", data });
+        });
+      }, []);
 
   return (
-    <div className="flex-1 flex">
+    <>
       <Paper className="m-auto p-4 flex flex-col">
         <Typography variant="h4" className="text-center">
           Inventář lodi
@@ -38,6 +37,6 @@ export default function Player({ state, dispatch }) {
           </>
         )}
       </Paper>
-    </div>
+    </>
   );
 }
