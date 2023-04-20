@@ -3,7 +3,7 @@ import { getFirestore } from "firebase/firestore";
 import  {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDSEeLOBAne-x66bsJayB2pszSs6M8vs1Q",
+  apiKey: process.env.REACT_APP_API_KEY,
   authDomain: "kubess-project.firebaseapp.com",
   projectId: "kubess-project",
   storageBucket: "kubess-project.appspot.com",
