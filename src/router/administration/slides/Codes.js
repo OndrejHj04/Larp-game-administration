@@ -1,11 +1,5 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../Auth";
 import Swal from "sweetalert2";
 
@@ -15,20 +9,27 @@ export default function Codes({ state, dispatch }) {
       getDoc(doc(db, "codes", state.code)).then((res) => {
         if (res.data() && res.data().state) {
           const { code } = res.data();
-
-          if (code.includes("XD")) {
-            const ref = doc(db, "inventory", "Kov A");
-            getDoc(ref).then((res) => {
-              const { count } = res.data();
-
-              updateDoc(ref, {
-                count: count + 2,
-              });
-
-              updateDoc(doc(db, "codes", state.code), { state: 0 });
-              Swal.fire("Správný kód. Dostáváte 2x Kov A", "", "success");
-            });
-          }
+          state.codePairs.forEach(({ item, sign }) => {
+            if (code.includes(sign)) {
+              const ref = doc(db, "inventory", item);
+              getDoc(ref)
+                .then((res) => {
+                  updateDoc(ref, {
+                    count: res.data().count + 2,
+                  });
+                })
+                .then(() => {
+                  updateDoc(doc(db, "codes", code), {
+                    state: 0,
+                  });
+                  Swal.fire(
+                    `Správný kód! Získáváte 2x ${item}.`,
+                    "",
+                    "success"
+                  );
+                });
+            }
+          });
         } else {
           Swal.fire("Tento kód neexistuje nebo už byl použit", "", "error");
         }
