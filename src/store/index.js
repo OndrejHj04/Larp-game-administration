@@ -13,6 +13,7 @@ export const initial = {
     { sign: "OH", item: "Kov B" },
     { sign: "PP", item: "CPU" },
   ],
+  codes: []
 };
 
 export const reducer = (state, actions) => {
@@ -35,6 +36,8 @@ export const reducer = (state, actions) => {
       return { ...state, masks: actions.data, loading: false };
     case "input-code":
       return { ...state, code: actions.value };
+    case "get-codes":
+      return {...state, codes: actions.data}
     default:
       return { ...state };
   }
