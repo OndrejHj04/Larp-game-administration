@@ -31,25 +31,21 @@ export default function Codes({ state, dispatch }) {
       getDoc(doc(db, "codes", state.code)).then((res) => {
         if (res.data() && res.data().state) {
           const { code } = res.data();
-          state.codePairs.forEach(({ item, sign }) => {
+          state.codePairs.forEach(({ item, sign, payload }) => {
             if (code.includes(sign)) {
-              const ref = doc(db, "inventory", item);
-              getDoc(ref)
-                .then((res) => {
+              item.map((val) => {
+                const ref = doc(db, "inventory", val);
+                getDoc(ref).then((res) => {
                   updateDoc(ref, {
-                    count: res.data().count + 2,
+                    count: res.data().count + payload,
                   });
-                })
-                .then(() => {
-                  updateDoc(doc(db, "codes", code), {
-                    state: 0,
-                  });
-                  Swal.fire(
-                    `Správný kód! Získáváte 2x ${item}.`,
-                    "",
-                    "success"
-                  );
                 });
+              });
+
+              updateDoc(doc(db, "codes", code), {
+                state: 0,
+              });
+              Swal.fire(`Správný kód! Získáváte ${payload}x ${item.map(item=>item)}.`, "", "success");
             }
           });
         } else {

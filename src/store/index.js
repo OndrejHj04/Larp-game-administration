@@ -9,11 +9,11 @@ export const initial = {
   slides: 4,
   code: "",
   codePairs: [
-    { sign: "XD", item: "Kov A" },
-    { sign: "OH", item: "Kov B" },
-    { sign: "PP", item: "CPU" },
+    { sign: "XD", item: ["Kov A"], payload: 4 },
+    { sign: "OH", item: ["Kov B"], payload: 4 },
+    { sign: "PP", item: ["Kov A", "Kov B"], payload: 2 },
   ],
-  codes: []
+  codes: [],
 };
 
 export const reducer = (state, actions) => {
@@ -37,7 +37,7 @@ export const reducer = (state, actions) => {
     case "input-code":
       return { ...state, code: actions.value };
     case "get-codes":
-      return {...state, codes: actions.data}
+      return { ...state, codes: actions.data };
     default:
       return { ...state };
   }
