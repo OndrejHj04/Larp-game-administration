@@ -6,7 +6,8 @@ export const initial = {
   masks: [],
   slider: 1,
   modal: false,
-  slides: 1,
+  slides: 4,
+  code: "",
 };
 
 export const reducer = (state, actions) => {
@@ -27,6 +28,8 @@ export const reducer = (state, actions) => {
       return { ...state, equipment: actions.data, loading: false };
     case "set-masks":
       return { ...state, masks: actions.data, loading: false };
+    case "input-code":
+      return { ...state, code: actions.value};
     default:
       return { ...state };
   }
