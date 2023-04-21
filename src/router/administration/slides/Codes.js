@@ -7,6 +7,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../Auth";
+import Swal from "sweetalert2";
 
 export default function Codes({ state, dispatch }) {
   const handleSubmit = () => {
@@ -25,10 +26,15 @@ export default function Codes({ state, dispatch }) {
               });
 
               updateDoc(doc(db, "codes", state.code), { state: 0 });
+              Swal.fire("Správný kód. Dostáváte 2x Kov A", "", "success");
             });
           }
+        } else {
+          Swal.fire("Tento kód neexistuje nebo už byl použit", "", "error");
         }
       });
+    } else {
+      Swal.fire("Nebyl zadán žádný kód", "", "error");
     }
   };
 
