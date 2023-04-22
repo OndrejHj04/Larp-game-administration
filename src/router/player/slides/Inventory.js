@@ -6,13 +6,47 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 export default function Inventory({ state, dispatch, db }) {
-  
   const handleCrafting = (name) => {
     dispatch({ type: "set-crafting-modal", value: name });
+  };
+
+  const makeCrafting = () => {
+    const { craftingItem, crafting } = state;
+
+    if (crafting[craftingItem]) {
+      const validate = crafting[craftingItem].ingredients.every(
+        (ingredience) =>
+          state.inventory.find((item) => item.name === ingredience.name)
+            .count >= ingredience.count
+      );
+
+      if (validate) {
+        updateDoc(doc(db, crafting[craftingItem].division, craftingItem), {
+          count:
+            state[crafting[craftingItem].division].find(
+              (item) => item.name === craftingItem
+            ).count + crafting[craftingItem].payload,
+        }).then(() => {
+          crafting[craftingItem].ingredients.forEach((item) => {
+            updateDoc(doc(db, "inventory", item.name), {
+              count:
+                state.inventory.find((inv) => inv.name === item.name).count -
+                item.count,
+            });
+          });
+          Swal.fire("Podařilo se vycraftit!", "", "success");
+          dispatch({ type: "set-crafting-modal", value: "" });
+        });
+      } else {
+        dispatch({ type: "set-crafting-modal", value: "" });
+        Swal.fire("Na vycraftění nemáte dost předmětů!", "", "error");
+      }
+    }
   };
 
   return (
@@ -28,7 +62,7 @@ export default function Inventory({ state, dispatch, db }) {
           </div>
         ) : (
           <>
-            {state.inventory.map(({ id, name, count }) => (
+            {state.inventory.map(({ id, name, count, craftable }) => (
               <div className="flex items-center mb-1 mt-1" key={id}>
                 <div className="mr-auto">
                   <Typography variant="h6">{name}</Typography>
@@ -40,6 +74,7 @@ export default function Inventory({ state, dispatch, db }) {
                   <Button
                     variant="contained"
                     onClick={() => handleCrafting(name)}
+                    disabled={!craftable}
                   >
                     <Typography>Craftit</Typography>
                   </Button>
@@ -49,23 +84,46 @@ export default function Inventory({ state, dispatch, db }) {
           </>
         )}
       </Paper>
-      <Modal
-        onClose={() => dispatch({ type: "set-crafting-modal", value: "" })}
-        open={Boolean(state.craftingItem.length)}
-        className="flex-1 flex"
-      >
-        <Box className="m-auto bg-white p-3 rounded-2xl">
-          <Typography variant="h6" color="green">
-            Craftění!
-          </Typography>
-          <Typography>Na craftění PŘEDMĚTU potřebujete PŘEDMĚTY!</Typography>
-          <div className="mt-3">
-            <Button variant="contained" color="success">
-              <Typography>CRAFTIT</Typography>
-            </Button>
-          </div>
-        </Box>
-      </Modal>
+      {state.craftingItem && (
+        <Modal
+          onClose={() => dispatch({ type: "set-crafting-modal", value: "" })}
+          open={Boolean(state.craftingItem.length)}
+          className="flex-1 flex"
+        >
+          <Box className="m-auto bg-white p-3 rounded-2xl">
+            <Typography variant="h6" color="green">
+              Craftění!
+            </Typography>
+            <div>
+              <Typography>
+                Na craftění {state.craftingItem} potřebujete
+              </Typography>
+              {state.crafting[state.craftingItem].ingredients.map((item) => (
+                <Typography key={item.name}>
+                  {item.count}x {item.name}
+                </Typography>
+              ))}
+            </div>
+            <div className="mt-3">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={makeCrafting}
+                disabled={
+                  !state.crafting[state.craftingItem].ingredients.every(
+                    (item) =>
+                      item.count <
+                      state.inventory.find((inv) => inv.name === item.name)
+                        .count
+                  )
+                }
+              >
+                <Typography>CRAFTIT</Typography>
+              </Button>
+            </div>
+          </Box>
+        </Modal>
+      )}
     </>
   );
 }

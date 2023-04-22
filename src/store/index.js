@@ -6,7 +6,7 @@ export const initial = {
   masks: [],
   slider: 1,
   modal: false,
-  slides: 2,
+  slides: 1,
   code: "",
   codePairs: [
     { sign: "XD", item: ["Kov_A"], payload: 4 },

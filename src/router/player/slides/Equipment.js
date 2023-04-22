@@ -73,6 +73,7 @@ export default function Equipment({ state, db, dispatch }) {
                   <Button
                     variant="contained"
                     onClick={() => handleCrafting(name)}
+                    disable
                   >
                     <Typography>Craftit</Typography>
                   </Button>
@@ -100,23 +101,46 @@ export default function Equipment({ state, db, dispatch }) {
           </>
         )}
       </Paper>
-      <Modal
-        onClose={() => dispatch({ type: "set-crafting-modal", value: "" })}
-        open={Boolean(state.craftingItem.length)}
-        className="flex-1 flex"
-      >
-        <Box className="m-auto bg-white p-3 rounded-2xl">
-          <Typography variant="h6" color="green">
-            Craftění!
-          </Typography>
-          <Typography>Na craftění PŘEDMĚTU potřebujete PŘEDMĚTY!</Typography>
-          <div className="mt-3">
-            <Button variant="contained" color="success" onClick={makeCrafting}>
-              <Typography>CRAFTIT</Typography>
-            </Button>
-          </div>
-        </Box>
-      </Modal>
+      {state.craftingItem && (
+        <Modal
+          onClose={() => dispatch({ type: "set-crafting-modal", value: "" })}
+          open={Boolean(state.craftingItem.length)}
+          className="flex-1 flex"
+        >
+          <Box className="m-auto bg-white p-3 rounded-2xl">
+            <Typography variant="h6" color="green">
+              Craftění!
+            </Typography>
+            <div>
+              <Typography>
+                Na craftění {state.craftingItem} potřebujete
+              </Typography>
+              {state.crafting[state.craftingItem].ingredients.map((item) => (
+                <Typography key={item.name}>
+                  {item.count}x {item.name}
+                </Typography>
+              ))}
+            </div>
+            <div className="mt-3">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={makeCrafting}
+                disabled={
+                  !state.crafting[state.craftingItem].ingredients.every(
+                    (item) =>
+                      item.count <
+                      state.inventory.find((inv) => inv.name === item.name)
+                        .count
+                  )
+                }
+              >
+                <Typography>CRAFTIT</Typography>
+              </Button>
+            </div>
+          </Box>
+        </Modal>
+      )}
     </>
   );
 }
