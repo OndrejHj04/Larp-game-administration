@@ -6,7 +6,7 @@ export const initial = {
   masks: [],
   slider: 1,
   modal: false,
-  slides: 4,
+  slides: 1,
   code: "",
   codePairs: [
     { sign: "XD", item: ["Kov A"], payload: 4 },
@@ -14,6 +14,17 @@ export const initial = {
     { sign: "PP", item: ["Kov A", "Kov B"], payload: 2 },
   ],
   codes: [],
+  crafting: {
+    Vysílačky: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov A", count: 20 },
+        { name: "Kov B", count: 10 },
+      ],
+      division: "equipment",
+    },
+  },
+  craftingModal: "",
 };
 
 export const reducer = (state, actions) => {
@@ -38,6 +49,8 @@ export const reducer = (state, actions) => {
       return { ...state, code: actions.value };
     case "get-codes":
       return { ...state, codes: actions.data };
+    case "set-crafting-modal":
+      return { ...state, craftingModal: actions.value };
     default:
       return { ...state };
   }
