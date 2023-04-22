@@ -18,8 +18,81 @@ export const initial = {
     Vysílačky: {
       payload: 2,
       ingredients: [
-        { name: "Kov_A", count: 1 },
-        { name: "Kov_B", count: 1 },
+        { name: "Kov_A", count: 20 },
+        { name: "Kov_B", count: 10 },
+      ],
+      division: "equipment",
+    },
+    Náboje: {
+      payload: 10,
+      ingredients: [
+        { name: "Kov_A", count: 5 },
+        { name: "Kov_B", count: 7 },
+      ],
+      division: "equipment",
+    },
+    Dýmovnice: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 20 },
+        { name: "Kov_B", count: 10 },
+        { name: "Kyselina", count: 1 },
+      ],
+      division: "equipment",
+    },
+    Baterky: {
+      payload: 2,
+      ingredients: [
+        { name: "Kov_A", count: 7 },
+        { name: "Kyselina", count: 1 },
+      ],
+      division: "inventory",
+    },
+    Cívka: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 10 },
+        { name: "Kov_B", count: 10 },
+      ],
+      division: "inventory",
+    },
+    Kabel: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 15 },
+        { name: "Kov_B", count: 10 },
+      ],
+      division: "inventory",
+    },
+    Chladič: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 10 },
+        { name: "Kov_B", count: 17 },
+      ],
+      division: "inventory",
+    },
+    Generátor_energie: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 25 },
+        { name: "Kov_B", count: 7 },
+      ],
+      division: "inventory",
+    },
+    Žárovka: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 3 },
+        { name: "Kov_B", count: 20 },
+      ],
+      division: "inventory",
+    },
+    Zbraně: {
+      payload: 1,
+      ingredients: [
+        { name: "Kov_A", count: 2 },
+        { name: "Kov_B", count: 28 },
       ],
       division: "equipment",
     },
