@@ -10,14 +10,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
 
 export default function Inventory({ state, dispatch, db }) {
-  useEffect(() => {
-    onSnapshot(collection(db, "inventory"), (item) => {
-      let data = [];
-      item.forEach((doc) => data.push(doc.data()));
-      dispatch({ type: "set-inventory", data });
-    });
-  }, []);
-
+  
   const handleCrafting = (name) => {
     dispatch({ type: "set-crafting-modal", value: name });
   };
@@ -58,7 +51,7 @@ export default function Inventory({ state, dispatch, db }) {
       </Paper>
       <Modal
         onClose={() => dispatch({ type: "set-crafting-modal", value: "" })}
-        open={Boolean(state.craftingModal.length)}
+        open={Boolean(state.craftingItem.length)}
         className="flex-1 flex"
       >
         <Box className="m-auto bg-white p-3 rounded-2xl">

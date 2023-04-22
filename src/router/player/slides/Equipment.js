@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import {
   Box,
   Button,
@@ -8,31 +8,47 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import Swal from "sweetalert2";
 
 export default function Equipment({ state, db, dispatch }) {
-  useEffect(() => {
-    onSnapshot(collection(db, "equipment"), (item) => {
-      let data = [];
-      item.forEach((doc) => data.push(doc.data()));
-      dispatch({ type: "set-equipment", data });
-    });
-
-    onSnapshot(collection(db, "oxygen-masks"), (item) => {
-      let data = [];
-      item.forEach((doc) => data.push(doc.data()));
-      dispatch({ type: "set-masks", data });
-    });
-  }, []);
-
   const handleCrafting = (name) => {
     dispatch({ type: "set-crafting-modal", value: name });
   };
 
-  useEffect(() => {
-    if (state.craftingModal.length) {
+  const makeCrafting = () => {
+    const { craftingItem, crafting } = state;
+
+    if (crafting[craftingItem]) {
+      const validate = crafting[craftingItem].ingredients.every(
+        (ingredience) =>
+          state.inventory.find((item) => item.name === ingredience.name)
+            .count >= ingredience.count
+      );
+
+      if (validate) {
+        updateDoc(doc(db, crafting[craftingItem].division, craftingItem), {
+          count:
+            state[crafting[craftingItem].division].find(
+              (item) => item.name === craftingItem
+            ).count + crafting[craftingItem].payload,
+        }).then(() => {
+          crafting[craftingItem].ingredients.forEach((item) => {
+            updateDoc(doc(db, "inventory", item.name), {
+              count:
+                state.inventory.find((inv) => inv.name === item.name).count -
+                item.count,
+            });
+          });
+          Swal.fire("Podařilo se vycraftit!", "", "success");
+          dispatch({ type: "set-crafting-modal", value: "" });
+        });
+      } else {
+        dispatch({ type: "set-crafting-modal", value: "" });
+        Swal.fire("Na vycraftění nemáte dost předmětů!", "", "error");
+      }
     }
-  }, []);
-  
+  };
+
   return (
     <>
       <Paper className="m-auto p-4 flex flex-col">
@@ -86,7 +102,7 @@ export default function Equipment({ state, db, dispatch }) {
       </Paper>
       <Modal
         onClose={() => dispatch({ type: "set-crafting-modal", value: "" })}
-        open={Boolean(state.craftingModal.length)}
+        open={Boolean(state.craftingItem.length)}
         className="flex-1 flex"
       >
         <Box className="m-auto bg-white p-3 rounded-2xl">
@@ -95,7 +111,7 @@ export default function Equipment({ state, db, dispatch }) {
           </Typography>
           <Typography>Na craftění PŘEDMĚTU potřebujete PŘEDMĚTY!</Typography>
           <div className="mt-3">
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={makeCrafting}>
               <Typography>CRAFTIT</Typography>
             </Button>
           </div>
