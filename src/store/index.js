@@ -99,11 +99,11 @@ export const initial = {
   },
   craftingItem: "",
   lockedItems: [
-    { item: "Chladič",  },
-    { item: "Generátor_energie",  },
-    { item: "Zbraně",  },
-    { item: "Baterky",  },
-    { item: "Dýmovnice",  },
+    { item: "Chladič", code: "PUIVWILMVA KK", division: "inventory" },
+    { item: "Generátor_energie", code: "XVIUTYBVPQ KK", division: "inventory" },
+    { item: "Zbraně", code: "MLIKQIUEYB KK", division: "equipment" },
+    { item: "Baterky", code: "JJLMTEWAYX KK", division: "inventory" },
+    { item: "Dýmovnice", code: "QRWTVYHJKM KK", division: "equipment" },
   ],
 };
 

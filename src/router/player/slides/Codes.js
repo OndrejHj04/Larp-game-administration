@@ -28,36 +28,47 @@ export default function Codes({ state, dispatch }) {
 
   const handleSubmit = () => {
     if (state.code.length) {
-      getDoc(doc(db, "codes", state.code)).then((res) => {
-        if (res.data() && res.data().state) {
-          const { code } = res.data();
-          state.codePairs.forEach(({ item, sign, payload }) => {
-            if (code.includes(sign)) {
-              item.map((val) => {
-                const ref = doc(db, "inventory", val);
-                getDoc(ref).then((res) => {
-                  updateDoc(ref, {
-                    count: res.data().count + payload,
+      const locked = state.lockedItems.filter(
+        (item) => item.code === state.code
+      );
+      if (locked.length) {
+        const { item, code, division } = locked[0];
+        updateDoc(doc(db, division, item), {
+          code: null,
+        });
+        Swal.fire(`Správný kód! Odmčen předmět ${item}!`, "", "success");
+      } else {
+        getDoc(doc(db, "codes", state.code)).then((res) => {
+          if (res.data() && res.data().state) {
+            const { code } = res.data();
+            state.codePairs.forEach(({ item, sign, payload }) => {
+              if (code.includes(sign)) {
+                item.map((val) => {
+                  const ref = doc(db, "inventory", val);
+                  getDoc(ref).then((res) => {
+                    updateDoc(ref, {
+                      count: res.data().count + payload,
+                    });
                   });
                 });
-              });
 
-              updateDoc(doc(db, "codes", code), {
-                state: 0,
-              });
-              Swal.fire(
-                `Správný kód! Získáváte ${payload}x ${item.map(
-                  (item) => item
-                )}.`,
-                "",
-                "success"
-              );
-            }
-          });
-        } else {
-          Swal.fire("Tento kód neexistuje nebo už byl použit", "", "error");
-        }
-      });
+                updateDoc(doc(db, "codes", code), {
+                  state: 0,
+                });
+                Swal.fire(
+                  `Správný kód! Získáváte ${payload}x ${item.map(
+                    (item) => item
+                  )}.`,
+                  "",
+                  "success"
+                );
+              }
+            });
+          } else {
+            Swal.fire("Tento kód neexistuje nebo už byl použit", "", "error");
+          }
+        });
+      }
     } else {
       Swal.fire("Nebyl zadán žádný kód", "", "error");
     }
