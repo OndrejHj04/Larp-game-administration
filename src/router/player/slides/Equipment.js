@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import {
   Box,
   Button,
@@ -14,6 +20,49 @@ import HttpsIcon from "@mui/icons-material/Https";
 export default function Equipment({ state, db, dispatch }) {
   const handleCrafting = (name) => {
     dispatch({ type: "set-crafting-modal", value: name });
+  };
+
+  const craftMask = ({ name, level }) => {
+    if (level < 4) {
+      const valid = Object.keys(state.maskUpgrade[level - 1]).every((item) => {
+        return (
+          state.inventory.find((val) => val.name === item).count >
+          state.maskUpgrade[level - 1][item]
+        );
+      });
+      if (valid) {
+        Object.keys(state.maskUpgrade[level - 1]).map((item) => {
+          getDoc(doc(db, "inventory", item)).then((res) => {
+            updateDoc(doc(db, "inventory", item), {
+              count: res.data().count - state.maskUpgrade[level - 1][item],
+            });
+          });
+        });
+
+        updateDoc(doc(db, "oxygen-masks", name), {
+          level: level + 1,
+        });
+
+        Swal.fire(
+          "Maska je na nové úrovni",
+          `Aktuální úroveň je ${level + 1}`,
+          "success"
+        );
+      } else {
+        Object.keys(state.maskUpgrade[level - 1]).map((item) => {
+          console.log(state.maskUpgrade[level - 1][item]);
+        });
+        Swal.fire(
+          "Masku nelze upgradovat.",
+          `Na další upgrade je potřeba ${Object.keys(
+            state.maskUpgrade[level - 1]
+          ).map((item) => `${item} x ${state.maskUpgrade[level - 1][item]}`)}`,
+          "error"
+        );
+      }
+    } else {
+      Swal.fire("Masku nelze upgradovat");
+    }
   };
 
   const makeCrafting = () => {
@@ -73,7 +122,7 @@ export default function Equipment({ state, db, dispatch }) {
                 <div className="ml-4">
                   <Button
                     variant="contained"
-                    onClick={() => handleCrafting(name)}
+                    onClick={() => craftMask({ name, level })}
                     disable
                   >
                     <Typography>Craftit</Typography>

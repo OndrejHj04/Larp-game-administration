@@ -8,6 +8,7 @@ export const initial = {
   modal: false,
   slides: 1,
   code: "",
+  maskUpgrade: [{Kov_A: 2, Kov_B: 2},{Kov_A: 3, Kov_B: 5},{Kov_A: 9, Kov_B: 10}],
   codePairs: [
     { sign: "XD", item: ["Kov_A"], payload: 4 },
     { sign: "OH", item: ["Kov_B"], payload: 4 },
