@@ -9,6 +9,7 @@ import {
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import HttpsIcon from "@mui/icons-material/Https";
 
 export default function Inventory({ state, dispatch, db }) {
   const handleCrafting = (name) => {
@@ -62,7 +63,7 @@ export default function Inventory({ state, dispatch, db }) {
           </div>
         ) : (
           <>
-            {state.inventory.map(({ id, name, count, craftable }) => (
+            {state.inventory.map(({ id, name, count, craftable, code }) => (
               <div className="flex items-center mb-1 mt-1" key={id}>
                 <div className="mr-auto">
                   <Typography variant="h6">{name}</Typography>
@@ -70,13 +71,18 @@ export default function Inventory({ state, dispatch, db }) {
                 <div className="ml-4">
                   <Typography>POČET: {count}</Typography>
                 </div>
-                <div className="ml-4">
+
+                <div className={`${code === null ? "ml-4" : "ml-14"}`}>
                   <Button
                     variant="contained"
                     onClick={() => handleCrafting(name)}
-                    disabled={!craftable}
+                    disabled={!craftable || code !== null}
                   >
-                    <Typography>Craftit</Typography>
+                    {code === null ? (
+                      <Typography>CRAFTIT</Typography>
+                    ) : (
+                      <HttpsIcon />
+                    )}
                   </Button>
                 </div>
               </div>

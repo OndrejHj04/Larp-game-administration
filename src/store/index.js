@@ -98,6 +98,13 @@ export const initial = {
     },
   },
   craftingItem: "",
+  lockedItems: [
+    { item: "Chladič",  },
+    { item: "Generátor_energie",  },
+    { item: "Zbraně",  },
+    { item: "Baterky",  },
+    { item: "Dýmovnice",  },
+  ],
 };
 
 export const reducer = (state, actions) => {
