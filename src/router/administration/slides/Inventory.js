@@ -5,11 +5,13 @@ import {
   Modal,
   Paper,
   Slider,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../../Auth";
 import { useEffect } from "react";
+import HttpsIcon from "@mui/icons-material/Https";
 
 export default function Inventory({ state, dispatch }) {
   useEffect(() => {
@@ -46,6 +48,7 @@ export default function Inventory({ state, dispatch }) {
   const handleSlider = (e) => {
     dispatch({ type: "set-slider", value: e.target.value });
   };
+
   return (
     <>
       <Paper className="m-auto p-4 flex flex-col">
@@ -58,15 +61,22 @@ export default function Inventory({ state, dispatch }) {
           </div>
         ) : (
           <>
-            {state.inventory.map(({ id, name, count }) => (
+            {state.inventory.map(({ id, name, count, code }) => (
               <div className="flex items-center mb-1 mt-1" key={id}>
                 <div className="mr-auto">
                   <Typography variant="h6">{name}</Typography>
                 </div>
-                <div className="ml-4">
+                {code && (
+                  <Tooltip title={<Typography>{code}</Typography>}>
+                    <div className="ml-3">
+                      <HttpsIcon />
+                    </div>
+                  </Tooltip>
+                )}
+                <div className="ml-3">
                   <Typography>POČET: {count}</Typography>
                 </div>
-                <div className="ml-4">
+                <div className="ml-3">
                   <Button
                     variant="contained"
                     size="small"
@@ -75,7 +85,7 @@ export default function Inventory({ state, dispatch }) {
                     <Typography>PŘIDAT</Typography>
                   </Button>
                 </div>
-                <div className="ml-4">
+                <div className="ml-3">
                   <Button
                     variant="contained"
                     size="small"

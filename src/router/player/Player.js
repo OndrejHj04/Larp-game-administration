@@ -2,7 +2,6 @@ import { Pagination } from "@mui/material";
 import { db } from "../../Auth";
 import Inventory from "./slides/Inventory";
 import Equipment from "./slides/Equipment";
-import Crafting from "./slides/Crafting";
 import Codes from "./slides/Codes";
 import { useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -46,13 +45,10 @@ export default function Player({ state, dispatch }) {
         <Equipment state={state} dispatch={dispatch} db={db} />
       )}
       {state.slides === 3 && (
-        <Crafting state={state} dispatch={dispatch} db={db} />
-      )}
-      {state.slides === 4 && (
         <Codes state={state} dispatch={dispatch} db={db} />
       )}
       <div className="mx-auto my-3">
-        <Pagination count={4} page={state.slides} onChange={handleSlides} />
+        <Pagination count={3} page={state.slides} onChange={handleSlides} />
       </div>
     </div>
   );

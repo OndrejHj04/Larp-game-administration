@@ -4,7 +4,10 @@ import { signInWithGoogle } from "../Auth";
 export default function Login({ dispatch }) {
   const handleLogin = () => {
     signInWithGoogle().then((res) => {
-      if (true) {
+      if (
+        res.user.email === "ondrej.hajek.profi@gmail.com" ||
+        res.user.email === "hajekkubik@gmail.com"
+      ) {
         dispatch({ type: "set-admin" });
       } else {
         dispatch({ type: "set-player" });
