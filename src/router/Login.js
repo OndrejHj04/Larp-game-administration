@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import { signInWithGoogle } from "../Auth";
 
 export default function Login({ dispatch }) {
@@ -16,7 +16,7 @@ export default function Login({ dispatch }) {
   };
 
   return (
-    <div className="flex-1 flex">
+    <div className="flex-1 flex flex-col">
       <div className="m-auto flex flex-col">
         <div className="mx-auto">
           <Button onClick={handleLogin} variant="contained" size="large">
@@ -32,6 +32,29 @@ export default function Login({ dispatch }) {
           >
             <Typography>PLAYER</Typography>
           </Button>
+        </div>
+      </div>
+      <div className="p-2 flex shadow-2xl justify-between">
+        <div>
+          <Typography>
+            Designed with 💘 and 🍺 by{" "}
+            <Link
+              href={process.env.REACT_APP_BEST_DISCORD}
+              target="_blank"
+              underline="none"
+            >
+              Houska-dev
+            </Link>
+          </Typography>
+        </div>
+        <div>
+          <Link
+            href={process.env.REACT_APP_ZASRANA_PRACE}
+            target="_blank"
+            underline="none"
+          >
+            <Typography className="text-white">MILUJI SVOJI PRÁCI!</Typography>
+          </Link>
         </div>
       </div>
     </div>
